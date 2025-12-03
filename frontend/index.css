@@ -9,7 +9,7 @@ header{
     text-align: center;
     padding: .5rem;
     margin: auto;
-    margin-top: 5rem;
+    margin-top: 3rem;
     border-radius: 20px;
     box-shadow: 0 0 20px blue;
 }
@@ -19,6 +19,9 @@ header:hover{
     font-size: 1.1rem;
     box-shadow: 0 0 20px purple;
 }
+.title{
+    margin-top: 1rem
+}
 
 .section1{
     height: 500px;
@@ -26,7 +29,7 @@ header:hover{
     margin: auto;
     border-radius: 20px;
     box-shadow: 0 0 20px red;    
-    margin-top: 5rem;
+    margin-top: 3rem;
     padding-top: .1rem;
 }
 .section1:hover{
