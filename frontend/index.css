@@ -1,0 +1,48 @@
+
+body{
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+header{
+    height: 10vh;
+    width: 30%;
+    text-align: center;
+    padding: .5rem;
+    margin: auto;
+    margin-top: 5rem;
+    border-radius: 20px;
+    box-shadow: 0 0 20px blue;
+}
+header:hover{
+    height: 10.5vh;
+    width: 31%;
+    font-size: 1.1rem;
+    box-shadow: 0 0 20px purple;
+}
+
+.section1{
+    height: 500px;
+    width: 1000px;
+    margin: auto;
+    border-radius: 20px;
+    box-shadow: 0 0 20px red;    
+    margin-top: 5rem;
+    padding-top: .1rem;
+}
+.section1:hover{
+    height: 510px;
+    width: 1010px;
+    box-shadow: 0 0 20px purple;
+}
+
+table{
+    width: 90%;
+    height: 90%;
+    margin: auto;
+    margin-top: 1.3rem;
+    border-radius: 20px;
+}
+tr{
+    text-align: center;
+    height: 10px;
+}
