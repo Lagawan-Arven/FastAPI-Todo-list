@@ -11,38 +11,61 @@
         
         <main>
 
-            <section class="section1">
+            <section class="form-section">
+            
+                <div class="form">
+                    <input type="number" id="id" placeholder="ID">
+                    <input type="text" id="name" placeholder="TODO">
+
+                    <select id="priority">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+
+                    <select id="difficulty">
+                        <option value="easy">Easy</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="hard">Hard</option>
+                    </select>
+
+                    <select id="status">
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In-progress</option>
+                        <option value="done">Done</option>
+                    </select>
+
+                    <button onclick="add_todo()">Add Todo</button>
+
+                </div>
+
+            </section>
+
+            <section class="table-section">
+
                 <table>
+                    <thead>
+                         <tr class="labels">
+                            <th>ID</th>
+                            <th>To-do</th>
+                            <th>Priority</th>
+                            <th>Difficulty</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                   
+                    <tbody id="todo-table">
 
-                    <tr class="labels">
-                        <th>Order</th>
-                        <th>To-do</th>
-                        <th>Priority</th>
-                        <th>Difficulty</th>
-                        <th>Status</th>
-                    </tr>
-
-                    <tr class="contents">
-                        <td>1</td>
-                        <td>Run</td>
-                        <td>Highest</td>
-                        <td>Intermediate</td>
-                        <td>Pending</td>
-                    </tr>
-
-                    <tr class="contents">
-                        <td>2</td>
-                        <td>Shopping</td>
-                        <td>High</td>
-                        <td>Intermediate</td>
-                        <td>Pending</td>
-                    </tr>
-
+                    </tbody>
+                   
                 </table>
+
             </section>
 
         </main>
+
     <script src="script.js"></script>
+    
 </body>
 </html>
 
