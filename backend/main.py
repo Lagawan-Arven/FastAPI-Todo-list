@@ -13,7 +13,6 @@ app.add_middleware(
 )
 
 class Todo(BaseModel):
-    id: int
     name: str
     priority: str
     difficulty: str
@@ -28,10 +27,11 @@ def get_todos():
 @app.post("/todos")
 def add_todo(todo: Todo):
     todos.append(todo)
-    return {"message":"Todo successfully added!"}
+    return {"message":"todo added succcessfully!"}
 
-@app.delete("/todos/{todo_id}")
-def delete_todo(todo_id: int):
-    global todos
-    todos = [t for t in todos if t.id != todo_id]
-    return {"message":"Todo deleted!"}
+@app.delete("/todos/{todo_name}")
+def delete_todo(todo_name: str):
+    for t in todos:
+        if t.name == todo_name:
+            todos.remove(t)
+            return {"message":"todo deleted!"}
