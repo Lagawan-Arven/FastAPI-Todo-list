@@ -12,7 +12,7 @@ header{
     margin: auto;
     margin-top: 1rem;
     border-radius: 20px;
-    box-shadow: 0 0 20px blue;
+    box-shadow: 0 0 10px blue;
 }
 header:hover{
     font-size: 1.1rem;
@@ -28,33 +28,113 @@ header:hover{
     margin: auto;
     margin-top: 2rem;
     border-radius: 20px;
-    box-shadow: 0 0 20px green;
-    padding: 0.5rem;
+    box-shadow: 0 0 10px green;
+    position: relative;
 }
 .form-section:hover{
     box-shadow: 0 0 20px purple;
 }
-.form{
-    width: 100%;
-    height: 100%;
+#front-container{
     position: relative;
-    gap: 1rem;
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+.add-todo{
+    width: 10rem;
+    height: 3rem;
+    position: absolute;
+    right: 65%;
+    top: 30%;
+    border-radius: 10px;
+}
+.update-todo{
+    width: 10rem;
+    height: 3rem;
+    position: absolute;
+    right: 45%;
+    top: 30%;
+    border-radius: 10px;
+}
+#id{
+    width: 3rem;
+    height: 1.5rem;
+    border-radius: 10px;
+    position: absolute;
+    top: 40%;
+    right: 55%;
+    display: none;
+}
+#confirm{
+    width: 5rem;
+    height: 2rem;
+    position: absolute;
+    right: 46%;
+    top: 38%;
+    border-radius: 10px;
+    display: none;
+}
+#back-confirm{
+    position: absolute;
+    right: 57%;
+    top: 8%;
+    display: none;
 }
 
+.search-todo{
+    width: 20rem;
+    height: 1.5rem;
+    position: absolute;
+    right: 2%;
+    top: 15%;
+    border-radius: 10px;
+}
+
+#form-container{
+    display: none;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+}
+label{
+    position: absolute;
+}
+.label1{
+    top: 5%;
+    right: 37%;
+}
+.label2{
+    top: 5%;
+    right: 27%;
+}
+.label3{
+    top: 5%;
+    right: 19%;
+}
+.form{
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    gap: .5rem;
+    justify-content: center;
+    align-items: center;
+}
+.back{
+    position: absolute;
+    top: 5%;
+    left: 2%;
+}
 .form input,select{
     height: 40px;
     border-radius: 20px;
 }
-#id{
-    width: 100px;
-}
+
 #name{
     width: 500px;
 }
-.form button{
-    position: absolute;
-    bottom: 0;
-    right: 45%;
+.save-todo{
     height: 40px;
     width: 100px;
     border-radius: 10px;
@@ -65,9 +145,10 @@ header:hover{
     width: 1000px;
     margin: auto;
     border-radius: 20px;
-    box-shadow: 0 0 20px red;    
+    box-shadow: 0 0 10px red;    
     margin-top: 2rem;
     padding-top: .1rem;
+    overflow-y: hidden;
 }
 .table-section:hover{
     box-shadow: 0 0 20px purple;
@@ -84,9 +165,8 @@ th,td,table{
 tr{
     text-align: center;
 }
-button.dlt-btn {
+.dlt-btn {
 padding: 6px 10px;
-border: none;
 cursor: pointer;
 border-radius: 5px;
 }
