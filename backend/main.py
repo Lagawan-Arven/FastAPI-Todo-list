@@ -1,6 +1,9 @@
-from fastapi import FastAPI,HTTPException
+from fastapi import FastAPI,HTTPException,Depends
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from models import Todo,Todo_create
+from sqlalchemy.orm import Session
+from database import SESSION,engine
+import database_models
 
 app = FastAPI()
 
@@ -12,32 +15,32 @@ app.add_middleware(
     allow_headers = ["*"]
 )
 
-global_todo_id  = 1
+database_models.Base.metadata.create_all(bind=engine)
 
-class Todo(BaseModel):
-    id: int
-    name: str
-    priority: str
-    difficulty: str
-    status: str
+def use_session():
+    session = SESSION()
+    try:
+        yield session
+    finally:
+        session.close()
 
-class Todo_create(BaseModel):
-    name: str
-    priority: str
-    difficulty: str
-    status: str   
-
-todos: list[Todo] = []
+def get_all_todos():
+    session = SESSION()
+    db_todos = session.query(database_models.Todo).all()
+    session.close()
+    return db_todos
 
 @app.get("/todos")
-def get_todos():
-    if todos == []:
-        return "There is no todo yet!"
+def get_todos(session: Session = Depends(use_session)):
+    db_todos = session.query(database_models.Todo).all()
+    if db_todos == []:
+        return "No todo yet!"
     else:
-        return todos
+        return db_todos
 
 @app.get("/todos/search")
-def get_searched_todos(q: str):
+def get_searched_todos(q: str,session: Session = Depends(use_session)):
+    todos = get_all_todos()
     searched_todos = []
     try:
         for t in todos:
@@ -57,48 +60,45 @@ def get_searched_todos(q: str):
         return "No todo yet!"
 
 @app.post("/todos")
-def add_todo(todo_input: Todo_create):
-    global global_todo_id
-    todo = Todo(
-        id = global_todo_id,
+def add_todo(todo_input: Todo_create,session: Session = Depends(use_session)):
+    todo = database_models.Todo(
         name = todo_input.name,
         priority = todo_input.priority,
         difficulty = todo_input.difficulty,
         status = todo_input.status
     )
 
-    todos.append(todo)
-    auto_update_id()
-    global_todo_id += 1
+    session.add(todo)
+    session.commit()
+    session.refresh(todo)
 
     return "Todo added succcessfully!"
 
-def auto_update_id():
-    local_todo_id = 1
-    i = 0
-    for t in todos:
-        todos[i].id = local_todo_id
-        i+=1
-        local_todo_id+=1
-
 @app.post("/todos/{todo_id}")
-def update_todo(todo_id: int,todo_update: Todo_create):
-    for t in todos:
-        if t.id == todo_id:
-            t.name = todo_update.name
-            t.priority = todo_update.priority
-            t.difficulty = todo_update.difficulty
-            t.status = todo_update.status
-            return "Todo updated!"
-    raise HTTPException(status_code=404,detail="Todo not found!")   
-        
+def update_todo(todo_id: int,
+                todo_update: Todo_create,
+                session: Session = Depends(use_session)):
 
+    todo = session.query(database_models.Todo).filter(database_models.Todo.id==todo_id).first()
+
+    if not todo:
+        raise HTTPException(status_code=404,detail="Todo not found!")   
+    
+    todo.name = todo_update.name
+    todo.priority = todo_update.priority
+    todo.difficulty = todo_update.difficulty
+    todo.status = todo_update.status
+
+    session.commit()
+    session.refresh(todo)
+        
 @app.delete("/todos/{todo_id}")
-def delete_todo(todo_id: int):
+def delete_todo(todo_id: int,session: Session = Depends(use_session)):
+    todos = get_all_todos()
     for t in todos:
         if t.id == todo_id:
-            todos.remove(t)
-            auto_update_id()
+            session.delete(t)
+            session.commit()
             return "Todo deleted!"
     
     raise HTTPException(status_code=404,detail="Todo not found!")    

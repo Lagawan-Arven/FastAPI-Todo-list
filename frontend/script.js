@@ -6,19 +6,17 @@ async function load_todos(){
     const table = document.getElementById("todo-table");
     table.innerHTML = "";
 
-    let num = 1;
     todos.forEach(todo =>{
         const row = document.createElement("tr");
         row.innerHTML = `
-        <td>${num}</td>
+        <td>${todo.id}</td>
         <td>${todo.name}</td>
         <td>${todo.priority}</td>
         <td>${todo.difficulty}</td>
         <td>${todo.status}</td>
-        <td><button class="dlt-btn" onclick="delete_todo(${num})">Delete</button></td>
+        <td><button class="dlt-btn" onclick="delete_todo(${todo.id})">Delete</button></td>
         `;
     table.appendChild(row);
-    num+=1;
     });
 }
 
@@ -30,19 +28,17 @@ document.getElementById("search-todo").addEventListener ("input",async function(
     const table = document.getElementById("todo-table");
     table.innerHTML = "";
 
-    let num = 1;
     todos.forEach(todo =>{
         const row = document.createElement("tr");
         row.innerHTML = `
-        <td>${num}</td>
+        <td>${todo.id}</td>
         <td>${todo.name}</td>
         <td>${todo.priority}</td>
         <td>${todo.difficulty}</td>
         <td>${todo.status}</td>
-        <td><button class="dlt-btn" onclick="delete_todo(${num})">Delete</button></td>
+        <td><button class="dlt-btn" onclick="delete_todo(${todo.id})">Delete</button></td>
         `;
     table.appendChild(row);
-    num+=1;
     });   
 });
 
