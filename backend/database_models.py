@@ -12,3 +12,11 @@ class Todo(Base):
     priority = Column(String)
     difficulty = Column(String)
     status = Column(String)
+
+class User(Base):
+
+    __tablename__ = "Users"
+
+    user_id = Column(Integer,primary_key=True,index=True)
+    user_username = Column(String)
+    user_password = Column()

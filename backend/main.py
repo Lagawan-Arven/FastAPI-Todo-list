@@ -1,6 +1,6 @@
 from fastapi import FastAPI,HTTPException,Depends
 from fastapi.middleware.cors import CORSMiddleware
-from models import Todo,Todo_create
+from models import Todo_create
 from sqlalchemy.orm import Session
 from database import SESSION,engine
 import database_models
