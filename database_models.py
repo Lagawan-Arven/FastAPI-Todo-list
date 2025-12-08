@@ -15,8 +15,8 @@ class Todo(Base):
 
 class User(Base):
 
-    __tablename__ = "Users"
+    __tablename__ = "Test_Users"
 
     user_id = Column(Integer,primary_key=True,index=True)
-    user_username = Column(String)
-    user_password = Column()
+    username = Column(String)
+    password = Column(String)

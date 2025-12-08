@@ -1,6 +1,6 @@
 from fastapi import FastAPI,HTTPException,Depends
 from fastapi.middleware.cors import CORSMiddleware
-from models import Todo_create
+from models import Todo_create,User
 from sqlalchemy.orm import Session
 from database import SESSION,engine
 import database_models
@@ -24,11 +24,42 @@ def use_session():
     finally:
         session.close()
 
+def get_all_users():
+    session = SESSION()
+    db_users = session.query(database_models.User).all()
+    session.close()
+    return db_users
+
 def get_all_todos():
     session = SESSION()
     db_todos = session.query(database_models.Todo).all()
     session.close()
     return db_todos
+
+@app.post("/signin")
+def validate_signin(User: User):
+    
+    users = get_all_users()
+    if users == []:
+        return "There is no users yet!"
+    for user in users:
+        if user.username == User.username and user.password == User.password:
+            return "Successfull"
+        elif user.username == User.username and user.password != User.password:
+            return "Incorrect password!"
+        elif user.username != User.username and user.password != User.password:
+            return "Incorrect email and password!"
+
+@app.post("/signup")
+def create_user(User: User,session: Session = Depends(use_session)):
+    user = database_models.User(
+        username = User.username,
+        password = User.password
+    )
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+    return "User successfully added!"
 
 @app.get("/todos")
 def get_todos(session: Session = Depends(use_session)):

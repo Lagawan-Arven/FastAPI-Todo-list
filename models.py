@@ -6,3 +6,7 @@ class Todo_create(BaseModel):
     priority: str
     difficulty: str
     status: str
+
+class User(BaseModel):
+    username: str
+    password: str

@@ -1,5 +1,84 @@
 api_url = "http://127.0.0.1:8000";
 
+/*===============================
+SIGN IN BUTTON FUNCTION
+================================*/
+document.getElementById("signin").addEventListener("click",function(){
+    document.getElementById("login-container").style.display = "none";
+    document.getElementById("signin-container").style.display = "block";
+});
+/*============
+return button1
+==============*/
+document.getElementById("return-btn1").addEventListener("click",function(){
+    document.getElementById("login-container").style.display = "block";
+    document.getElementById("signin-container").style.display = "none";
+});
+/*============
+confirm sign in
+==============*/
+document.getElementById("confirm-signin").addEventListener("click",async function(){
+    const username = document.getElementById("signin-username").value;
+    const password = document.getElementById("signin-password").value;
+
+    const User_signin = {username,password};
+
+    const res = await fetch(`${api_url}/signin`,{
+        method: "POST",
+        headers: {"Content/Type":"json/application"},
+        body: JSON.stringify(User_signin)
+    });
+    if (res === "Successfull"){
+        document.getElementById("login-section").style.display = "none";
+        document.getElementById("main").style.display = "block";
+    }else if (res === "Incorrect password!"){
+        alert("Incorrect password!");
+    }else if(res === "Incorrect email and password!"){
+        alert("Incorrect email and password!");
+    }else if(res === "There is no users yet!"){
+        alert("There is no users yet!");
+    }
+    
+});
+
+/*===============================
+SIGN UP BUTTON FUNCTION
+================================*/
+document.getElementById("signup").addEventListener("click",function(){
+    document.getElementById("login-container").style.display = "none";
+    document.getElementById("signup-container").style.display = "block";
+});
+/*============
+return button2
+==============*/
+document.getElementById("return-btn2").addEventListener("click",function(){
+    document.getElementById("login-container").style.display = "block";
+    document.getElementById("signup-container").style.display = "none";
+});
+/*============
+confirm sign up
+==============*/
+document.getElementById("confirm-signup").addEventListener("click",async function(){
+    const username = document.getElementById("signup-username").value;
+    const password = document.getElementById("signup-password").value;
+    const confirm_password = document.getElementById("confirm-password").value;
+
+    if (password === confirm_password){
+       const User_signin = {username,password} ;
+
+       const res = await fetch(`${api_url}/signup`,{
+        method: "POST",
+        headers: {"Content/Type":"application/json"},
+        body: JSON.stringify(User_signin)
+    });
+        alert("Account Created Successfully!");
+    }
+    else{
+        alert("Password did not match!");
+    }
+ 
+});
+
 async function load_todos(){
     const res = await fetch(`${api_url}/todos`);
     const todos = await res.json();
