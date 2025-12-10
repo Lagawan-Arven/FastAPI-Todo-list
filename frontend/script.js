@@ -1,5 +1,7 @@
 api_url = "http://127.0.0.1:8000";
 
+let current_user_id = 0;
+
 /*===============================
 SIGN IN BUTTON FUNCTION
 ================================*/
@@ -21,22 +23,40 @@ document.getElementById("confirm-signin").addEventListener("click",async functio
     const username = document.getElementById("signin-username").value;
     const password = document.getElementById("signin-password").value;
 
-    const User_signin = {username,password};
+    const credentials = {username,password};
 
     const res = await fetch(`${api_url}/signin`,{
         method: "POST",
-        headers: {"Content/Type":"json/application"},
-        body: JSON.stringify(User_signin)
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(credentials)
     });
-    if (res === "Successfull"){
+    const response = await res.json();
+
+    if (response.message === "successful"){
+        
+        current_user_id = response.user_id;
+
+        alert("Sign in successful!");
         document.getElementById("login-section").style.display = "none";
         document.getElementById("main").style.display = "block";
-    }else if (res === "Incorrect password!"){
+
+        document.getElementById("signin-username").value = "";
+        document.getElementById("signin-password").value = "";
+
+        load_todos(current_user_id);
+
+    }else if (response.message === "incorrect password"){
         alert("Incorrect password!");
-    }else if(res === "Incorrect email and password!"){
-        alert("Incorrect email and password!");
-    }else if(res === "There is no users yet!"){
+        document.getElementById("signin-username").value = "";
+        document.getElementById("signin-password").value = "";     
+    }else if(response.message === "account does not exist"){
+        alert("Account does not exist!");
+        document.getElementById("signin-username").value = "";
+        document.getElementById("signin-password").value = "";
+    }else if(response.message === "no users yet"){
         alert("There is no users yet!");
+        document.getElementById("signin-username").value = "";
+        document.getElementById("signin-password").value = "";
     }
     
 });
@@ -64,24 +84,41 @@ document.getElementById("confirm-signup").addEventListener("click",async functio
     const confirm_password = document.getElementById("confirm-password").value;
 
     if (password === confirm_password){
-       const User_signin = {username,password} ;
+       const credentials = {username,password};
 
        const res = await fetch(`${api_url}/signup`,{
         method: "POST",
-        headers: {"Content/Type":"application/json"},
-        body: JSON.stringify(User_signin)
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(credentials)
     });
+    const response = await res.json();
+    if (response.message === "User successfully added!"){
         alert("Account Created Successfully!");
+
+        document.getElementById("signup-container").style.display = "none";
+        document.getElementById("signin-container").style.display = "block";
+
+        document.getElementById("signup-username").value = "";
+        document.getElementById("signup-password").value = "";
+        document.getElementById("confirm-password").value = "";
+        }
     }
+
     else{
         alert("Password did not match!");
+        document.getElementById("confirm-password").value = "";       
     }
  
 });
 
-async function load_todos(){
-    const res = await fetch(`${api_url}/todos`);
+
+/*===============================
+            LOAD ALL TODOS
+================================*/
+async function load_todos(user_id){
+    const res = await fetch(`${api_url}/users/${user_id}/todos`);
     const todos = await res.json();
+ 
     const table = document.getElementById("todo-table");
     table.innerHTML = "";
 
@@ -99,15 +136,20 @@ async function load_todos(){
     });
 }
 
-document.getElementById("search-todo").addEventListener ("input",async function(){
+/*===============================
+            SEARCH TODOS
+================================*/
+document.getElementById("search-todo").addEventListener("input",async function(){
+
     const query = this.value;
 
-    const res = await fetch(`${api_url}/todos/search?q=${query}`);
+    const res = await fetch(`${api_url}/users/${current_user_id}/todos/search?q=${query}`);
     const todos = await res.json();
     const table = document.getElementById("todo-table");
     table.innerHTML = "";
 
     todos.forEach(todo =>{
+
         const row = document.createElement("tr");
         row.innerHTML = `
         <td>${todo.id}</td>
@@ -118,9 +160,14 @@ document.getElementById("search-todo").addEventListener ("input",async function(
         <td><button class="dlt-btn" onclick="delete_todo(${todo.id})">Delete</button></td>
         `;
     table.appendChild(row);
+
     });   
+
 });
 
+/*===============================
+            ADD TODO
+================================*/
 async function add_todo(){
     const name = document.getElementById("name").value;
     const priority = document.getElementById("priority").value;
@@ -129,14 +176,18 @@ async function add_todo(){
 
     todo = {name,priority,difficulty,status};
 
-    await fetch(`${api_url}/todos`,{
+    await fetch(`${api_url}/users/${current_user_id}/todos`,{
         method: "POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify(todo)
     });
-    load_todos();
+    alert("Todo successfully added!");
+    load_todos(current_user_id);
 }
 
+/*===============================
+           UPDATE TODO
+================================*/
 async function update_todo(todo_id){
     const name = document.getElementById("name").value;
     const priority = document.getElementById("priority").value;
@@ -145,22 +196,26 @@ async function update_todo(todo_id){
 
     todo = {name,priority,difficulty,status};
 
-    await fetch(`${api_url}/todos/${todo_id}`,{
-        method: "POST",
+    await fetch(`${api_url}/users/${current_user_id}/todos/${todo_id}`,{
+        method: "PATCH",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify(todo)
     });
-    load_todos();   
+    alert("Todo successfully updated!");
+    load_todos(current_user_id);   
 }
 
+/*===============================
+           DELETE TODO
+================================*/
 async function delete_todo(todo_id){
-    await fetch(`${api_url}/todos/${todo_id}`,{
+    await fetch(`${api_url}/users/${current_user_id}/todos/${todo_id}`,{
         method: "DELETE"
     });
-    load_todos();
+    load_todos(current_user_id);
+    alert("Todo deleted!");
 }
 
-load_todos();
 
 /* add todo button ==> displaying the form */
     document.getElementById("add-todo").addEventListener("click",function(){
@@ -176,21 +231,21 @@ document.getElementById("back").addEventListener("click",function(){
     document.getElementById("front-container").style.display = "block";
 });
 /* update todo button ==> displaying ID input */
-    document.getElementById("update-todo").addEventListener("click",function(){
+document.getElementById("update-todo").addEventListener("click",function(){
     document.getElementById("id").style.display = "block";
     document.getElementById("confirm").style.display = "block";
     document.getElementById("back-confirm").style.display = "block";
     document.getElementById("update-todo").style.display = "none";
 });
 /* back-confirm button ==> displaying back the update button */
-    document.getElementById("back-confirm").addEventListener("click",function(){
+document.getElementById("back-confirm").addEventListener("click",function(){
     document.getElementById("id").style.display = "none";
     document.getElementById("confirm").style.display = "none";
     document.getElementById("back-confirm").style.display = "none";
     document.getElementById("update-todo").style.display = "block";
 });
 /* update todo confirm button ==> displaying the form */
-    document.getElementById("confirm").addEventListener("click",function(){
+document.getElementById("confirm").addEventListener("click",function(){
     document.getElementById("form-container").style.display = "block";
     document.getElementById("front-container").style.display = "none";
     const id = Number(document.getElementById("id").value);
@@ -199,3 +254,4 @@ document.getElementById("back").addEventListener("click",function(){
     update.setAttribute("onclick", `update_todo(${id})`);
 });
 
+load_todos(current_user_id);
