@@ -1,6 +1,13 @@
 from pydantic import BaseModel
 
+class Todo_Create(BaseModel):
+    name: str
+    priority: str
+    difficulty: str
+    status: str
+
 class Todo(BaseModel):
+    id: int
     name: str
     priority: str
     difficulty: str
@@ -9,10 +16,13 @@ class Todo(BaseModel):
     class Config:
         from_attributes = True
 
-class User(BaseModel):
+class User_Create(BaseModel):
     username: str
     password: str
-    todos: list[Todo] = [] 
+
+class User(BaseModel):
+    id: int
+    username: str
 
     class Config:
         from_attributes = True

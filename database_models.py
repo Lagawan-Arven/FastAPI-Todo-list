@@ -6,7 +6,7 @@ Base = declarative_base()
 
 class Todo(Base):
 
-    __tablename__ = "Todos"
+    __tablename__ = "todos"
 
     id = Column(Integer,primary_key=True,index=True)
     name = Column(String)
@@ -14,12 +14,12 @@ class Todo(Base):
     difficulty = Column(String)
     status = Column(String)
 
-    user_id = Column(Integer,ForeignKey("Test_Users.id"))
+    user_id = Column(Integer,ForeignKey("users.id"))
     user = relationship("User",back_populates="todos")
 
 class User(Base):
 
-    __tablename__ = "Test_Users"
+    __tablename__ = "users"
 
     id = Column(Integer,primary_key=True,index=True)
     username = Column(String)
