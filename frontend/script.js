@@ -1,7 +1,5 @@
 api_url = "http://127.0.0.1:8000";
 
-let current_user_id = 0;
-
 /*===============================
 SIGN IN BUTTON FUNCTION
 ================================*/
@@ -27,14 +25,11 @@ document.getElementById("confirm-signin").addEventListener("click",async functio
 
     const res = await fetch(`${api_url}/signin`,{
         method: "POST",
-        headers: {"Content-Type":"application/json"},
         body: JSON.stringify(credentials)
     });
     const response = await res.json();
 
-    if (response.message === "successful"){
-        
-        current_user_id = response.user_id;
+    if (response.message === "Successful"){
 
         alert("Sign in successful!");
         document.getElementById("login-section").style.display = "none";
@@ -42,8 +37,6 @@ document.getElementById("confirm-signin").addEventListener("click",async functio
 
         document.getElementById("signin-username").value = "";
         document.getElementById("signin-password").value = "";
-
-        load_todos(current_user_id);
 
     }else if (response.message === "incorrect password"){
         alert("Incorrect password!");
@@ -86,22 +79,23 @@ document.getElementById("confirm-signup").addEventListener("click",async functio
     if (password === confirm_password){
        const credentials = {username,password};
 
-       const res = await fetch(`${api_url}/signup`,{
+       const res = await fetch(`${api_url}/register`,{
         method: "POST",
-        headers: {"Content-Type":"application/json"},
         body: JSON.stringify(credentials)
     });
     const response = await res.json();
-    if (response.message === "User successfully added!"){
+    if (response.message === "user added successfully!"){
         alert("Account Created Successfully!");
 
         document.getElementById("signup-container").style.display = "none";
         document.getElementById("signin-container").style.display = "block";
+        }
 
+    else if(response.message === "user already existed!"){
         document.getElementById("signup-username").value = "";
         document.getElementById("signup-password").value = "";
         document.getElementById("confirm-password").value = "";
-        }
+    }
     }
 
     else{
@@ -115,8 +109,8 @@ document.getElementById("confirm-signup").addEventListener("click",async functio
 /*===============================
             LOAD ALL TODOS
 ================================*/
-async function load_todos(user_id){
-    const res = await fetch(`${api_url}/users/${user_id}/todos`);
+async function load_todos(){
+    const res = await fetch(`${api_url}/todos`);
     const todos = await res.json();
  
     const table = document.getElementById("todo-table");
@@ -139,11 +133,12 @@ async function load_todos(user_id){
 /*===============================
             SEARCH TODOS
 ================================*/
+/*
 document.getElementById("search-todo").addEventListener("input",async function(){
 
     const query = this.value;
 
-    const res = await fetch(`${api_url}/users/${current_user_id}/todos/search?q=${query}`);
+    const res = await fetch(`${api_url}/todos/search?q=${query}`);
     const todos = await res.json();
     const table = document.getElementById("todo-table");
     table.innerHTML = "";
@@ -176,9 +171,8 @@ async function add_todo(){
 
     todo = {name,priority,difficulty,status};
 
-    await fetch(`${api_url}/users/${current_user_id}/todos`,{
+    await fetch(`${api_url}/todos`,{
         method: "POST",
-        headers: {"Content-Type":"application/json"},
         body: JSON.stringify(todo)
     });
     alert("Todo successfully added!");
@@ -188,6 +182,7 @@ async function add_todo(){
 /*===============================
            UPDATE TODO
 ================================*/
+/*
 async function update_todo(todo_id){
     const name = document.getElementById("name").value;
     const priority = document.getElementById("priority").value;
@@ -196,9 +191,8 @@ async function update_todo(todo_id){
 
     todo = {name,priority,difficulty,status};
 
-    await fetch(`${api_url}/users/${current_user_id}/todos/${todo_id}`,{
+    await fetch(`${api_url}/todos/${todo_id}`,{
         method: "PATCH",
-        headers: {"Content-Type":"application/json"},
         body: JSON.stringify(todo)
     });
     alert("Todo successfully updated!");
@@ -208,8 +202,9 @@ async function update_todo(todo_id){
 /*===============================
            DELETE TODO
 ================================*/
+/*
 async function delete_todo(todo_id){
-    await fetch(`${api_url}/users/${current_user_id}/todos/${todo_id}`,{
+    await fetch(`${api_url}/todos/${todo_id}`,{
         method: "DELETE"
     });
     load_todos(current_user_id);
@@ -254,4 +249,4 @@ document.getElementById("confirm").addEventListener("click",function(){
     update.setAttribute("onclick", `update_todo(${id})`);
 });
 
-load_todos(current_user_id);
+load_todos();

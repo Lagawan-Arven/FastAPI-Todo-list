@@ -7,5 +7,5 @@ import os
 load_dotenv()
 
 db_url = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
-engine = create_engine(db_url,echo=True)
+engine = create_engine(db_url)
 SESSION = sessionmaker(autocommit = False, autoflush=False, bind=engine)    
